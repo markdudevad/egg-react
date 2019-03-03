@@ -4,20 +4,13 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.26.0/babel.js"></script>
 <script type="text/babel">
 const rootElement = document.getElementById('root')
-//const element = React.createElement('div', {
-//    className: 'container',
-//    children: 'Hello World',
-//})
-const content = 'Hello World'
-const myClassName = 'container'
-const props = {
-    className: 'container',
-    children: 'Hello World',
-}
+const Message = (props) => <div>{props.msg}</div>
 const element = (
-    <div {...props} />
+    <div className="container">
+        <Message msg="Hello World" />
+        <Message msg="Goodbye World" />
+    </div>
 )
-
 
 ReactDOM.render(element, rootElement)
 console.log(element)
