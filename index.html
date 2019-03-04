@@ -8,72 +8,30 @@
   <script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.26.0/babel.js"></script>
 </head>
-<!-- VIDEO 11 STOP MEMORY LEAKS WITH COMPONENTWILLUNMOUNT LIFECYCLE METHOD IN REACT -->
+<!-- VIDEO 12 USE CLASS COMPONENTS WITH REACT -->
 <body>
 
   <div id="root"></div>
 
   <script type="text/babel">
 
-    class StopWatch extends React.Component {
-      state = {lapse: 0, running: false}
-      handleRunClick = () => {
-        this.setState(state => {
-          if (state.running) {
-            clearInterval(this.timer)
-          } else {
-            const startTime = Date.now() - this.state.lapse
-            this.timer = setInterval(() => {
-              this.setState({
-                lapse: Date.now() - startTime
-              })
-            })
-          }
-          return {running: !state.running}
-        })
-      }
-      handleClearClick = () => {
-        clearInterval(this.timer)
-        this.setState({lapse: 0, running: false})
-      }
-      componentWillUnmount() {
-        clearInterval(this.timer)
+    class Counter extends React.Component {
+      state = {count: 0}
+      handleClick = () => {
+        this.setState(({count}) => ({
+          count: count + 1,
+        }))
       }
       render() {
-        const {lapse, running} = this.state
-        const buttonStyles = {
-        border: '1px solid #ccc',
-        background: '#fff',
-        fontSize: '2em',
-        padding: 15,
-        margin: 5,
-        width: 200,
-        }
         return (
-          <div style={{textAlign: 'center'}}>
-            <label
-              style={{fontSize: '5em', display: 'block'}}
-            >
-              {lapse}ms
-            </label>
-            <button 
-              onClick={this.handleRunClick}
-              style={buttonStyles}
-            >
-              {running ? 'Stop' : 'Start'}
-            </button>
-            <button 
-              onClick={this.handleClearClick}
-              style={buttonStyles}
-            >
-              Clear
-            </button>
-          </div>
+          <button onClick={this.handleClick}>
+            {this.state.count}
+          </button>
         )
       }
     }
 
-    const element = <StopWatch />
+    const element = <Counter />
     ReactDOM.render(
       element,
       document.getElementById('root')
