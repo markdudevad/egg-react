@@ -7,67 +7,55 @@
   <script crossorigin src="https://unpkg.com/react@16/umd/react.development.js"></script>
   <script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.26.0/babel.js"></script>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 
 </head>
-<!-- VIDEO 17 USE THE KEY PROP WHEN RENDERING A LIST WITH REACT -->
+<!-- VIDEO 18 MAKE HTTP REQUESTS WITH REACT -->
 <body>
 
   <div id="root"></div>
 
   <script type="text/babel">
 
-    class App extends React.Component {
-      static allItems = [
-        {id: 'a', value: 'apple'},
-        {id: 'o', value: 'orange'},
-        {id: 'g', value: 'grape'},
-        {id: 'p', value: 'pear'},
-      ]
-      state = {items: []}
-      addItem = () => {
-        this.setState(({items}) => ({
-          items: [
-            ...items,
-            App.allItems.find(
-              i => !items.includes(i),
-            ),
-          ],
-        }))
-      }
-      removeItem = item => {
-        this.setState(({items}) => ({
-          items: items.filter(i => i !== item),
-        }))
+    class UserCompany extends React.Component {
+      state = {company: undefined, loaded: false}
+      componentDidMount() {
+        axios({
+          url: 'https://api.github.com/graphql',
+          method: 'post',
+          data: {
+            query: `{
+              user(login: "${this.props.username}") {
+                company
+              }
+            }`,
+          },
+          headers: {
+            Authorization: `bearer 905e2c2fc22477e7fa6d87a278f4dc914b4091f7`
+          },
+        }).then(response => {
+          this.setState({
+            loaded: true,
+            company: response.data.data.user.company,
+          })
+        })
       }
       render() {
-        const {items} = this.state
-        return (
-          <div>
-            <button
-              disabled={
-                items.length >= App.allItems.length
-              }
-              onClick={this.addItem}
-            >
-              +
-            </button>
-            {items.map((i, index) => (
-              <div key={i.id}>
-                <button
-                  onClick={() => this.removeItem(i)}
-                >
-                  -
-                </button>
-                {i.value}:
-                <input />
-              </div>
-            ))}
-          </div>
-        )
+        return this.state.loaded ? this.state.company || 'Unknown' 
+        : '...'
       }
     }
 
-    const element = <App />
+    const username = 'markdudevad'
+    const element = (
+      <div>
+        <div>
+          {`@${username} works at `}
+          <UserCompany username={username} />
+        </div>
+      </div>
+    )
+
     ReactDOM.render(
       element,
       document.getElementById('root'),
